@@ -5,10 +5,10 @@ rtc = RTC()
 now = [8, 8, 8, 8]
 
 digits = [
+    Pin(16, Pin.OUT),
+    Pin(17, Pin.OUT),
     Pin(18, Pin.OUT),
-    Pin(19, Pin.OUT),
-    Pin(20, Pin.OUT),
-    Pin(21, Pin.OUT)
+    Pin(19, Pin.OUT)
 ]
 
 segments = [
