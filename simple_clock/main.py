@@ -2,7 +2,10 @@ import time
 from machine import Pin, Timer, RTC
 
 rtc = RTC()
-now = [8, 8, 8, 8]
+timestamp= [8, 8, 8, 8]
+
+# これより遅いとチカチカする。速いと他の数字と混ざる
+refresh_interval = 0.008
 
 digits = [
     Pin(16, Pin.OUT),
@@ -24,6 +27,14 @@ segments = [
 uc_lc = Pin(15, Pin.OUT)
 led = Pin(25, Pin.OUT)
 
+buttons = [
+    Pin(20, Pin.IN, Pin.PULL_DOWN),
+    Pin(21, Pin.IN, Pin.PULL_DOWN),
+    Pin(22, Pin.IN, Pin.PULL_DOWN),
+    Pin(26, Pin.IN, Pin.PULL_DOWN),
+    Pin(27, Pin.IN, Pin.PULL_DOWN)
+]
+
 seg_ptn = [
     #A,B,C,D,E,F,G
     [1,1,1,1,1,1,0], # 0
@@ -39,7 +50,8 @@ seg_ptn = [
 ]
 
 
-def display(num:int):
+# LEDを数字の形に設定する
+def set_number(num:int):
     for idx,sp in enumerate(seg_ptn[num]):
         if sp == 0:
             segments[idx].value(1)
@@ -47,7 +59,8 @@ def display(num:int):
             segments[idx].value(0)
 
 
-def switch(digit_num:int):    
+# 指定された桁のLEDのみ点灯する
+def turn_leds_on(digit_num:int):    
     active = digits[digit_num]
     active.value(1)
 
@@ -65,14 +78,14 @@ def zfill(number:int) -> str:
 
 
 def read_time(timer):
-    timestamp:tuple = rtc.datetime()[4:6]
-    hours:str = zfill(timestamp[0])
-    minutes:str = zfill(timestamp[1])
+    now:tuple = rtc.datetime()[4:6]
+    hours:str = zfill(now[0])
+    minutes:str = zfill(now[1])
     
-    now[0] = int(hours[0])
-    now[1] = int(hours[1])
-    now[2] = int(minutes[0])
-    now[3] = int(minutes[1])
+    timestamp[0] = int(hours[0])
+    timestamp[1] = int(hours[1])
+    timestamp[2] = int(minutes[0])
+    timestamp[3] = int(minutes[1])
     
     # 秒針をLEDで表現
     led.toggle()
@@ -87,18 +100,17 @@ def main():
     
     while True:   
         for i in range(4):
-            switch(i)
             
             if i == 0:
-                display(now[0])
+                set_number(timestamp[0])
             elif i == 1:
-                display(now[1])
+                set_number(timestamp[1])
             elif i == 2:
-                display(now[2])
+                set_number(timestamp[2])
             elif i == 3:
-                display(now[3])
-            
-            # これより遅いとチカチカする。速いと他の数字と混ざる
-            time.sleep(0.008)
-            
+                set_number(timestamp[3])
+        
+            turn_leds_on(i)
+            time.sleep(refresh_interval)
+
 main()
