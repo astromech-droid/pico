@@ -33,10 +33,17 @@ class LEDS:
         [1,1,1,1,0,1,1], # 9
     ]
     
+    colon = Pin(15, Pin.OUT)
+    
     visible = True
     blink = False
     timer = Timer()
     refresh_interval = 0.008 # これより長いとチカチカし、短いと数字が混ざる
+    
+    
+    def __init__(self):
+        # コロンは常に点灯
+        self.colon.low()
     
 
     # 概要: 一桁だけ数字を点灯する
