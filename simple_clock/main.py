@@ -1,7 +1,8 @@
 from Leds import LEDS
 from Time import Time
+from machine import Pin
 
-time = Time()
+time = Time(second_hand=Pin(25, Pin.OUT))
 leds = LEDS()
 
 leds.enable_blink(interval=300)

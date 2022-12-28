@@ -18,7 +18,8 @@ class Time:
     rtc = RTC()
     timer = Timer()
 
-    def __init__(self):
+    def __init__(self, second_hand:Pin):
+        self.second_hand = second_hand
         
         def _count_up(pin):
             # チャタリング対策                  
@@ -53,12 +54,16 @@ class Time:
 
     def sync_rtc(self):
         def _sync(timer):
+            self.second_hand.high()
+
             hours, minutes = self.rtc.datetime()[4:6]
             self.time[0] = floor(hours / 10)
             self.time[1] = hours - self.time[0] * 10
             self.time[2] = floor(minutes / 10)
             self.time[3] = minutes - self.time[2] * 10
-        
+
+            self.second_hand.low()
+
         self.timer.init(period=1000, callback=_sync)
 
 
