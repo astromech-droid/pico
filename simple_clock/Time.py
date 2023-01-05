@@ -6,10 +6,10 @@ class Time:
     time = [0] * 4
 
     buttons = [
-        Pin(20, Pin.IN, Pin.PULL_DOWN),
-        Pin(21, Pin.IN, Pin.PULL_DOWN),
-        Pin(22, Pin.IN, Pin.PULL_DOWN),
         Pin(26, Pin.IN, Pin.PULL_DOWN),
+        Pin(22, Pin.IN, Pin.PULL_DOWN),
+        Pin(21, Pin.IN, Pin.PULL_DOWN),
+        Pin(20, Pin.IN, Pin.PULL_DOWN),
         Pin(27, Pin.IN, Pin.PULL_DOWN)
     ]
     
